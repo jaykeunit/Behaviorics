@@ -1,0 +1,104 @@
+
+@import "http://fonts.googleapis.com/css?family=Lato";
+@import url("reportsPage.css");
+
+body {
+    height: 265px;
+    width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+}
+
+body {
+    background-image: url("../images/blue.jpg");
+}
+
+h1 {
+  font-size: 75px;
+  font-weight: bold;
+  color: white;
+  letter-spacing: 1px;
+  text-align: center;
+  text-shadow: 3px 3px #C0C0C0;
+  text-transform: uppercase;
+  font-family: Lato;
+  span {
+      font-size: 13px;
+      display: block;
+      padding-left: 4px;
+    }
+}
+
+p{
+    font-family: Lato;
+}
+
+table#loginTable {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1%;
+}
+
+form {
+    float: right;
+    clear: right;
+    width: 490px;
+    text-align: right;
+    border-radius: 1px;
+    padding: 4px;
+}
+
+input[type=text] {
+    width: 80%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #00000;
+    border-radius: 4px;
+    background-color: white;
+}
+
+input {
+    background-color: white;
+}
+
+input[type=password] {
+    width: 80%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #00000;
+    border-radius: 4px;
+    background-color: white;
+}
+
+button[type=submit] {
+    width: 125%;
+    background-color: #C0C0C0;
+    color: black;
+    padding: 10px 20px;
+    margin: 20px 0;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button[type=submit]:hover {
+    background-color: blue;
+}
+
+div {
+    color: white;
+    padding: 4px;
+    font-weight: bold
+}
+
+label {
+    color: white;
+    display: inline-block;
+    width: 425px;
+    text-align: left;
+    font-weight: bold;
+    font-family: Lato;
+}

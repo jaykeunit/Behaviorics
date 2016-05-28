@@ -1,0 +1,9 @@
+
+.inlinelabel, inlinelabel.inline {
+    display: inline-block;
+    width: 150px;
+}
+
+.labelcontainer{
+    padding: 2px 2px 2px 2px;
+}

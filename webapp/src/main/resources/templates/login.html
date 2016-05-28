@@ -1,0 +1,32 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd" >
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/login.css}" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <h1>Behaviorics</h1>
+    <div th:if="${param.error}">
+        <p>Invalid user id and password.</p>
+    </div>
+    <div th:if="${param.logout}">
+        <p>You have successfully logged out.</p>
+    </div>
+    <form id="loginForm" action="#" th:action="@{/login}" method="post">
+        <table id="loginTable">
+            <tr>
+                <div><label> User ID <input style="background-color:white;" type="text" id="loginText" name="username"/> </label></div>
+            </tr>
+            <tr>
+                <div><label> Password <input style="background-color:white;" type="password" id="passwordText" name="password"/> </label></div>
+            </tr>
+            <tr>
+                <td><button id="submitButton" value="Sign in" type="submit">Sign in</button></td>
+            </tr>
+        </table>
+    </form>
+</body>
+</html>

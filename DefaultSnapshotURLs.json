@@ -1,0 +1,4 @@
+{
+	"Foscam-F19821WV2": "http://[IPADDRESS]/cgi-bin/CGIProxy.fcgi?cmd=snapPicture2&usr=[USERNAME]&pwd=[PASSWORD]&",
+	"Foscam-F18921WV2": "http://[IPADDRESS]:554/cgi-bin/CGIProxy.fcgi?cmd=snapPicture2&usr=[USERNAME]&pwd=[PASSWORD]"
+}

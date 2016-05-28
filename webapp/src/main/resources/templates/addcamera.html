@@ -1,0 +1,393 @@
+<!DOCTYPE html >
+<html lang = "en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript" src="../static/scripts/navbar.js" th:src="@{/scripts/navbar.js}"></script>
+
+
+<head>
+    <title>Manage Cameras</title>
+    <!--/*/ <th:block th:include="fragments/headerAll :: head"></th:block> /*/-->
+    <link rel="stylesheet" type="text/css" href="../static/css/addcamera.css" th:href="@{/css/addcamera.css}" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+</head>
+<body>
+
+<!-- START OF HEADER -->
+<div class="container">
+    <header class="page-header">
+        <h1>Behaviorics</h1>
+        <h2><small>Camera System Fault Detection Tool</small></h2>
+    </header>
+</div>
+<!-- END OF HEADER -->
+
+<!-- START OF MENU -->
+<nav id="navbar-main" class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a th:href="@{/reports}">Home</a></li>
+                <li><a th:href="@{/failreports}">Camera Reports</a></li>
+                <li><a th:href="@{/cameraInformation}">Camera Information</a></li>
+                <li class="dropdown active">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Manage
+                        <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a th:href="@{/admin/addentity}">Entities</a></li>
+                        <li><a th:href="@{/admin/addbuilding}">Buildings</a></li>
+                        <li><a th:href="@{/admin/addfloor}">Floors</a></li>
+                        <li><a th:href="@{/admin/addcamera}">Cameras</a></li>
+                        <li><a th:href="@{/admin/addUser}">Users</a></li>
+                    </ul>
+                </li>
+                <li><a th:href="@{/manage}">Monitor Cameras</a></li>
+            </ul>
+            <form class="navbar-form navbar-right" th:action="@{/logout}" method="post">
+                <button type="submit" class="btn btn-default">Sign Out</button>
+            </form>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+<!-- END OF MENU -->
+
+
+<div class="container">
+
+    <br />
+    <h2>Manage Cameras</h2>
+    <hr />
+    <form id = "cameraForm" action="#" th:action="@{/admin/addcamera}" th:object="${camera}" method="post">
+
+        <div class="labelcontainer">
+            <span class="inlinelabel">Feed IP: </span>
+            <input type="text" th:field="*{feedIP}" id ="feedIPField" required="required"/>
+        </div>
+
+        <div class="labelcontainer">
+            <span class="inlinelabel">Feed Credential: </span>
+            <input type="text" th:field="*{feedCredential}" id ="feedCredentialField" required="required"/>
+        </div>
+
+        <div class="labelcontainer">
+            <span class="inlinelabel">Feed Password: </span>
+            <input type="text" th:field="*{feedPassword}" id ="feedPasswordField" required="required"/>
+        </div>
+
+        <div class="labelcontainer">
+            <span class="inlinelabel">Location X: </span>
+            <input class = "noBox" type="text" th:field="*{locationX}" id ="xField" readonly="readonly" required="required"/>
+        </div>
+
+        <div class="labelcontainer">
+            <span class="inlinelabel">Location Y: </span>
+            <input class = "noBox" type="text" th:field="*{locationY}" id = "yField" readonly="readonly" required="required"/>
+        </div>
+
+        <div class="labelcontainer">
+            <span class="inlinelabel">Install Date: </span>
+            <input type="date" th:field="*{dateInstalled}" id ="dateField" required="required"/>
+        </div>
+
+        <div class="labelcontainer">
+            <span class="inlinelabel">Floor ID: </span>
+            <input class = "noBox" type="text" th:field="*{floorID}" id ="floorIdField" readonly="readonly" required="required"/>
+        </div>
+
+        <div class="labelcontainer">
+            <span class="inlinelabel">Maintenance Name: </span>
+            <input type="text" th:field="*{localMaintenanceName}" required="required"/>
+        </div>
+
+        <div class="labelcontainer">
+            <span class="inlinelabel">Maintenance Phone #: </span>
+            <input type="text" th:field="*{localMaintenanceNumber}" required="required"/>
+        </div>
+
+        <div class="labelcontainer">
+            <span class="inlinelabel">Manufacturer-Model: </span>
+            <input type="text" th:field="*{vendorName}" id ="VendorNameField" required="required"/>
+        </div>
+
+        <div class="labelcontainer">
+            <span class="inlinelabel">Vendor Phone #: </span>
+            <input type="text" th:field="*{vendorPhoneNumber}" required="required"/>
+        </div>
+
+        <div class="labelcontainer">
+            <span class="inlinelabel">Vendor Email: </span>
+            <input type="text" th:field="*{vendorEmail}" required="required"/>
+        </div>
+
+        <div class="labelcontainer">
+            <span class="inlinelabel">Warranty Expiration: </span>
+            <input type="date" th:field="*{warrantyExpiration}"/>
+        </div>
+
+        <div class="labelcontainer">
+            <span class="inlinelabel">HTTP Port: </span>
+            <input type="number" th:field="*{httpPort}" min = "0" id ="HttpField" required="required"/>
+        </div>
+
+        <div class="labelcontainer">
+            <span class="inlinelabel">ONVIF Port: </span>
+            <input type="number" th:field="*{onvifPort}" min = "0" id ="OnvifField" required="required"/>
+        </div>
+
+        <input type="hidden" th:field="*{cameraName}" readonly="readonly" placeholder="Generated Automatically"/>
+        <input type="hidden" th:field="*{orgId}" min = "0" id="orgIdField" readonly="readonly"/>
+        <input type="hidden" id="statusField" th:field="*{cameraStatus}" readonly="readonly" />
+
+        <div style="padding: 20px 5px 5px 5px;"> <input type="reset" value="Reset" /> <input type="submit" value="Submit" /> </div>
+    </form>
+
+    <div class="container">
+        <div th:if="${message}">
+            <h4 id="message" th:style="${style}" th:text="${message}"/>
+            <script>
+                $(document).ready(function(){
+                    $("#message").fadeOut(3000);
+                });
+            </script>
+        </div>
+    </div>
+
+    <div id="FloorplanViewContainer">
+    </div>
+
+    <div class="container" id ="selector">
+        <h3>Floors</h3>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Entity Name</th>
+                <th>Building Name</th>
+                <th>Floor Number</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="row:${list}" th:object="${row}">
+                <td th:text="*{getEntityName()}"></td>
+                <td th:text="*{getBuildingName()}"></td>
+                <td th:text="*{getFloorNumber()}"></td>
+                <td>
+                    <button id ="selectButton" name="select" th:onclick="'javascript:showForm(' + *{getFloorID()} + ', ' +  *{getOrganizationID()} + ')' ">Add Camera Here</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Edit a Camera Table -->
+<div id ="editContainer" class="container">
+    <hr />
+    <h3>Cameras</h3>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Camera Name</th>
+            <th>Entity Name</th>
+            <th>Building Name</th>
+            <th>Floor Number</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="editCamera:${allCameras}" th:object="${editCamera}">
+            <td th:text="*{getId()}"></td>
+            <td th:text="*{getCameraName()}"></td>
+            <td th:text="*{getEntityName()}"></td>
+            <td th:text="*{getBuildingName()}"></td>
+            <td th:text="*{getFloorNumber()}"></td>
+            <td>
+                <a name="remove"  th:href="@{/admin/deleteCamera(id=*{getId()})}">Remove</a>
+            </td>
+            <td>
+                <a name= "edit" href="#openModal" th:onclick="'javascript:requestCameraEdit(' + ${editCamera.getId()} + ', \''
+                         + ${editCamera.getCameraName()} + '\', \'' + ${editCamera.getFeedIP()}  + '\', \'' + ${editCamera.getFeedCredential()}
+                         + '\', \'' + ${editCamera.getFeedPassword()} + '\', ' + ${editCamera.getLocationX()} + ', ' + ${editCamera.getLocationY()}
+                         + ', \'' + ${editCamera.getDateInstalled()} + '\', ' + ${editCamera.getFloorID()}  + ', \'' + ${editCamera.getVendorName()}
+                         + '\', \'' + ${editCamera.getLocalMaintenanceName()} + '\', \'' + ${editCamera.getLocalMaintenanceNumber()}
+                         + '\', \'' + ${editCamera.getVendorPhoneNumber()} + '\', \'' + ${editCamera.getVendorEmail()} + '\', \'' + ${editCamera.getWarrantyExpiration()}
+                         + '\', \'' + ${editCamera.getCameraStatus()} + '\', ' + ${editCamera.getHttpPort()} + ', ' + ${editCamera.getOnvifPort()} + ')'">edit</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<!-- End of Edit a Camera Table -->
+
+<!-- Begin Modal Box -->
+<div id="openModal" class="modalDialog">
+    <div>
+        <a href="#close" title="Close" class="close">X</a>
+        <h3>Edit a Camera</h3>
+        <form action="#" th:action="@{/admin/editCamera}" th:object="${editCamera}" method="post" >
+            <p><input type="hidden" th:field="*{id}" id="IDField"/></p>
+            <p><input type="hidden" th:field="*{floorID}" id="floorIDArea"/></p>
+            <p><input type="hidden" th:field="*{cameraStatus}" id="cameraStatusField"/></p>
+            <p><input type="hidden" th:field="*{cameraName}" id="cameraNameField"/></p>
+
+            <div class="labelcontainer">
+                <span class="inlinelabel">Feed IP: </span>
+                <input type="text" th:field="*{feedIP}" id="feedIPArea"/>
+            </div>
+
+            <div class="labelcontainer">
+                <span class="inlinelabel">Feed Credential: </span>
+                <input type="text" th:field="*{feedCredential}" id="feedCredentialArea"/>
+            </div>
+
+            <div class="labelcontainer">
+                <span class="inlinelabel">Feed Password: </span>
+                <input type="text" th:field="*{feedPassword}" id="feedPasswordArea"/>
+            </div>
+
+            <div class="labelcontainer">
+                <span class="inlinelabel">Location X: </span>
+                <input type="text" th:field="*{locationX}" id="locationXField"/>
+            </div>
+
+            <div class="labelcontainer">
+                <span class="inlinelabel">Location Y: </span>
+                <input type="text" th:field="*{locationY}" id="locationYField"/>
+            </div>
+
+            <div class="labelcontainer">
+                <span class="inlinelabel">Install Date: </span>
+                <input type="text" th:field="*{dateInstalled}" id="dateInstalledField"/>
+            </div>
+
+            <div class="labelcontainer">
+                <span class="inlinelabel">Maintenance Name: </span>
+                <input type="text" th:field="*{localMaintenanceName}" id="localMaintenanceNameField"/>
+            </div>
+
+            <div class="labelcontainer">
+                <span class="inlinelabel">Maintenance Phone #: </span>
+                <input type="text" th:field="*{localMaintenanceNumber}" id="localMaintenanceNumberField"/>
+            </div>
+
+            <div class="labelcontainer">
+                <span class="inlinelabel">Manufacturer-Model: </span>
+                <input type="text" th:field="*{vendorName}" id="vendorNameArea"/>
+            </div>
+
+            <div class="labelcontainer">
+                <span class="inlinelabel">Vendor Phone #: </span>
+                <input type="text" th:field="*{vendorPhoneNumber}" id="vendorPhoneNumberField"/>
+            </div>
+
+            <div class="labelcontainer">
+                <span class="inlinelabel">Vendor Email: </span>
+                <input type="text" th:field="*{vendorEmail}" id="vendorEmailField"/>
+            </div>
+
+            <div class="labelcontainer">
+                <span class="inlinelabel">Warranty Expiration: </span>
+                <input type="text" th:field="*{warrantyExpiration}" id="warrantyExpirationField"/>
+            </div>
+
+            <div class="labelcontainer">
+                <span class="inlinelabel">HTTP Port: </span>
+                <input type="text" th:field="*{httpPort}" id="httpPortField"/>
+            </div>
+
+            <div class="labelcontainer">
+                <span class="inlinelabel">Onvif Port: </span>
+                <input type="text" th:field="*{onvifPort}" id="onvifPortField"/>
+            </div>
+
+            <div style="padding: 20px 5px 5px 5px;"> <input type="reset" value="Reset" /> <input type="submit" value="Submit" /> </div>
+        </form>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+    </div>
+</div>
+<!-- End of Modal Box -->
+
+</body>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    var requestCameraEdit = function (id, cameraName, feedIP, feedCredential, feedPassword, locationX, locationY, dateInstalled, floorID, vendorName, localMaintenanceName, localMaintenanceNumber, vendorPhoneNumber, vendorEmail, warrantyExpiration, cameraStatus, httpPort, onvifPort) {
+
+        console.log(id);
+        document.getElementById('IDField').value = id;
+        document.getElementById('floorIDArea').value = floorID;
+        document.getElementById('cameraStatusField').value = cameraStatus;
+        document.getElementById('cameraNameField').value = cameraName;
+        document.getElementById('feedIPArea').value = feedIP;
+        document.getElementById('feedCredentialArea').value = feedCredential;
+        document.getElementById('feedPasswordArea').value = feedPassword;
+        document.getElementById('locationXField').value = locationX;
+        document.getElementById('locationYField').value = locationY;
+        document.getElementById('dateInstalledField').value = dateInstalled;
+        document.getElementById('vendorNameArea').value = vendorName;
+        document.getElementById('localMaintenanceNameField').value = localMaintenanceName;
+        document.getElementById('localMaintenanceNumberField').value = localMaintenanceNumber;
+        document.getElementById('vendorPhoneNumberField').value = vendorPhoneNumber;
+        document.getElementById('vendorEmailField').value = vendorEmail;
+        document.getElementById('warrantyExpirationField').value = warrantyExpiration;
+        document.getElementById('httpPortField').value = httpPort;
+        document.getElementById('onvifPortField').value = onvifPort;
+    }
+
+    function showForm(floorId, orgId){
+        $('#selector').css('display', 'none');
+        $('#cameraForm').css('display', 'inline');
+        $('#editContainer').css('display', 'none');
+        $('#floorIdField').val(floorId);
+        $('#orgIdField').val(orgId);
+        $('#statusField').val('Working');
+        document.getElementById('dateField').valueAsDate = new Date();
+        requestFloorplan(floorId);
+    }
+
+    var requestFloorplan = function(floorID) {
+        document.getElementById("FloorplanViewContainer").innerHTML="<img onclick='showImage()' class='overlays' id='floorImage'src='/floorPlan/" + floorID + "/'>";
+    }
+
+    function showImage() {
+
+        var image = document.getElementById('floorImage');
+        var container = document.getElementById('FloorplanViewContainer');
+        var containerOffsetLeft = container.offsetLeft;
+        var containerOffsetTop = container.offsetTop;
+        var iconLeft = 16;
+        var iconUp = 50;
+
+        var event = window.event;
+        var xCoordinate = (event.pageX - containerOffsetLeft);
+        var yCoordinate = (event.pageY - containerOffsetTop);
+
+        $('#cameraIcon').remove();
+
+        if(xCoordinate < image.width && yCoordinate < image.height) {
+
+            var newImage = document.createElement("img");
+            newImage.setAttribute('src', "../images/cameraIcon.png");
+            newImage.setAttribute('id', 'cameraIcon');
+            newImage.style.left = xCoordinate  + containerOffsetLeft - iconLeft + "px";
+            newImage.style.top = yCoordinate  + containerOffsetTop - iconUp + "px";
+
+            document.getElementById("FloorplanViewContainer").appendChild(newImage);
+            $('#xField').val(xCoordinate);
+            $('#yField').val(yCoordinate);
+
+        }
+    }
+
+    /*]]>*/
+</script>
+
+</html>

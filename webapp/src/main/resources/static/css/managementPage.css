@@ -1,0 +1,153 @@
+body {
+    width: 100%;
+    height: 100%;
+}
+
+html {
+    height: 87%;
+    min-width: 1000px;
+}
+
+#listContainer{
+  margin-top:15px;
+}
+
+#expList ul, li {
+    list-style: none;
+    margin:0;
+    padding:0;
+    cursor: pointer;
+}
+
+#expList p {
+    margin:0;
+    display:block;
+}
+
+#expList p:hover {
+    background-color:#121212;
+}
+
+#expList li {
+    line-height:140%;
+    text-indent:0px;
+    background-position: 1px 8px;
+    padding-left: 20px;
+    background-repeat: no-repeat;
+}
+
+/* Collapsed state for list element */
+#expList .collapsed {
+    background-image: url(../img/collapsed.png);
+}
+/* Expanded state for list element
+/* NOTE: This class must be located UNDER the collapsed one */
+#expList .expanded {
+    background-image: url(../img/expanded.png);
+}
+
+#ActiveAlertsContainer {
+            display:inline-block;
+            width: 20%;
+            height: 30%;
+            overflow: scroll;
+}
+
+#CameraViewContainer {
+            display:inline-block;
+            width: 79%;
+            height: 30%;
+            white-space: nowrap;
+            overflow: scroll;
+}
+
+#FloorMenuContainer {
+            display:inline-block;
+            width: 20%;
+            height: 86.2%;
+            overflow: scroll;
+}
+
+#FloorplanViewContainer {
+            display:inline-block;
+            width: 80%;
+            height: 75%;
+            overflow: scroll;
+            position: absolute;
+}
+
+#CameraMenu {
+    	display:none;
+		float:left;
+        width:10%;
+        height:100%;
+        padding: 20px 0px 10px 0px;}
+
+#InstallView{
+            float:left;
+              width:27%;
+              height:92%;
+              padding: 10px 5px 10px 10px;
+              text-align: center;
+}
+
+#RecentFailureView{
+            float:left;
+              width:27%;
+              height:92%;
+              padding: 10px 5px 10px 5px;
+              text-align: center;
+}
+
+#LiveFeedView{
+            float:left;
+              width:27%;
+              height:92%;
+              padding: 10px 10px 10px 5px;
+              text-align: center;
+}
+
+#InstallView img {
+    height:auto;
+    display:block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#RecentFailureView img {
+    height:auto;
+    display:block;
+    margin-left: auto;
+        margin-right: auto;
+}
+
+#LiveFeedView img {
+    height:auto;
+    display:block;
+    margin-left: auto;
+        margin-right: auto;
+}
+
+.cameraImages{
+    vertical-align: inherit;
+}
+
+.overlays {
+    position:absolute;
+}
+
+.entity-title {
+    text-align: left;
+}
+
+.building-title {
+    text-align: center;
+}
+
+.floor-title {
+    text-align: center;
+}
+
+.list-group-item {
+    border-style: hidden;
+}

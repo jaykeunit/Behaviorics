@@ -1,0 +1,126 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript" src="../static/scripts/navbar.js" th:src="@{/scripts/navbar.js}"></script>
+
+    <head>
+        <title>Home</title>
+        <!--/*/ <th:block th:include="fragments/headerAll :: head"></th:block> /*/-->
+        <link rel="stylesheet" type="text/css" th:href="@{/css/reportsPage.css}" />
+
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+
+    </head>
+    <body>
+
+        <!-- START OF HEADER -->
+        <div class="container">
+            <header class="page-header">
+                <h1>Behaviorics</h1>
+                <h2><small>Camera System Fault Detection Tool</small></h2>
+            </header>
+        </div>
+        <!-- END OF HEADER -->
+
+        <!-- START OF MENU -->
+        <nav id="navbar-main" class="navbar navbar-default">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a th:href="@{/reports}">Home</a></li>
+                        <li><a th:href="@{/failreports}">Camera Reports</a></li>
+                        <li><a th:href="@{/cameraInformation}">Camera Information</a></li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Manage
+                                <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a th:href="@{/admin/addentity}">Entities</a></li>
+                                <li><a th:href="@{/admin/addbuilding}">Buildings</a></li>
+                                <li><a th:href="@{/admin/addfloor}">Floors</a></li>
+                                <li><a th:href="@{/admin/addcamera}">Cameras</a></li>
+                                <li><a th:href="@{/admin/addUser}">Users</a></li>
+                            </ul>
+                        </li>
+                        <li><a th:href="@{/manage}">Monitor Cameras</a></li>
+                    </ul>
+                    <form class="navbar-form navbar-right" th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn btn-default">Sign Out</button>
+                    </form>
+                </div><!--/.nav-collapse -->
+            </div>
+        </nav>
+        <!-- END OF MENU -->
+
+        <div class="container">
+
+
+            <br />
+            <br />
+            <br />
+
+            <div style="text-align: center;">
+                <p><b id="OperationalCameraCount" style="color: green; font-size: 20px;" th:text="${service.getOperationalCameras(cameraList).size()}"/> cameras are functioning properly</p>
+
+                <p><b id="RequestedCameraCount" style="color: orange; font-size: 20px;"  th:text="${service.getRepairRequestedCameras(cameraList).size()}"/> cameras have unresolved repair requests that have been ordered</p>
+
+                <p><b id="DamagedCameraCount" style="color: red; font-size: 20px;" th:text="${service.getDamagedCameras(cameraList).size()}"/> cameras require attention</p>
+                <p>
+                    Problematic Cameras
+                </p>
+                <p>
+
+                    <select name="ProblematicCameras" multiple="" style="width: 300px; height: 200px" >
+                        <th:block th:each="cam : ${service.getDamagedCameras(cameraList)}" th:object="${cam}">
+                            <option th:value="@{*{getId()}}" th:text="${''+cam.getCameraName()+'(id: ' + cam.getId() + ')'}" />
+
+                        </th:block>
+                    </select>
+                </p>
+                <p>
+                    Recent Repair Logs
+                </p>
+                <p>
+
+                <select name="UnresolvedRepairs" multiple="" style="width: 500px; height: 200px">
+                    <th:block th:each="cam : ${service.getActiveRepairs()}" th:object="${cam}">
+                        <option th:value="@{*{getId()}}" th:text="${'Camera id:' + cam.getCameraID() + ' not working since ' + cam.getDateFailed().toString()}"
+                                th:onclick="'javascript:unresolvedRepairsChanged(' + ${cam} + ')'"/>
+
+                    </th:block>
+                </select>
+
+                </p>
+            </div>
+        </div>
+    </body>
+    <script th:inline="javascript">
+
+        function onCameraSelected(camid){
+
+            var cam = ctx.getVariables().get("service").getCameraFromId(camid);
+            var rbutton = document.getElementById('resolvebutton');
+            var repairchoice = document.getElementById('UnresolvedRepairs');
+
+            window.alert('Cam ' + cam.toString());
+
+        }
+
+        document.getElementById('resolvebutton').onclick = function resolveButtonClicked(cam) {
+            window.alert('Resolve button clicked');
+        }
+        document.getElementById('createrequestbutton').onclick = function requestButtonClicked(cam) {
+            window.alert('Request button clicked');
+        }
+
+    </script>
+</html>

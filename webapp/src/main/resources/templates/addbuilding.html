@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang = "en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript" src="../static/scripts/navbar.js" th:src="@{/scripts/navbar.js}"></script>
+
+<head>
+    <title>Manage Buildings</title>
+    <!--/*/ <th:block th:include="fragments/headerAll :: head"></th:block> /*/-->
+    <link rel="stylesheet" type="text/css" href="../static/css/addbuilding.css" th:href="@{/css/addbuilding.css}" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+</head>
+    <body>
+
+        <!-- START OF HEADER -->
+        <div class="container">
+            <header class="page-header">
+                <h1>Behaviorics</h1>
+                <h2><small>Camera System Fault Detection Tool</small></h2>
+            </header>
+        </div>
+        <!-- END OF HEADER -->
+
+        <!-- START OF MENU -->
+        <nav id="navbar-main" class="navbar navbar-default">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a th:href="@{/reports}">Home</a></li>
+                        <li><a th:href="@{/failreports}">Camera Reports</a></li>
+                        <li><a th:href="@{/cameraInformation}">Camera Information</a></li>
+                        <li class="dropdown active">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Manage
+                                <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a th:href="@{/admin/addentity}">Entities</a></li>
+                                <li><a th:href="@{/admin/addbuilding}">Buildings</a></li>
+                                <li><a th:href="@{/admin/addfloor}">Floors</a></li>
+                                <li><a th:href="@{/admin/addcamera}">Cameras</a></li>
+                                <li><a th:href="@{/admin/addUser}">Users</a></li>
+                            </ul>
+                        </li>
+                        <li><a th:href="@{/manage}">Monitor Cameras</a></li>
+                    </ul>
+                    <form class="navbar-form navbar-right" th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn btn-default">Sign Out</button>
+                    </form>
+                </div><!--/.nav-collapse -->
+            </div>
+        </nav>
+        <!-- END OF MENU -->
+
+        <div class="container">
+
+            <h2>Manage Buildings</h2>
+            <hr />
+            <h3>Add a Building</h3>
+            <form action="#" th:action="@{/admin/addbuilding}" th:object="${building}" method="post" >
+                <div class="labelcontainer">
+                    <span class="inlinelabel">Name: </span>
+                    <input type="text" th:field="*{buildingName}" required="required"/>
+                </div>
+
+                <div class="labelcontainer">
+                    <span class="inlinelabel">Entity: </span>
+                    <select th:field="*{entityID}">
+                        <option th:each="entity : ${service.getEntities()}"
+                                th:value="${entity.getID()}"
+                                th:text="${entity.getEntityName()}">Wireframe</option>
+                    </select>
+                </div>
+
+                <div class="labelcontainer">
+                    <span class="inlinelabel">Street Code: </span>
+                    <input type="text" th:field="*{streetCode}" required="required"/>
+                </div>
+
+                <div class="labelcontainer">
+                    <span class="inlinelabel">Street Name: </span>
+                    <input type="text" th:field="*{streetName}" required="required"/>
+                </div>
+
+                <div class="labelcontainer">
+                    <span class="inlinelabel">City: </span>
+                    <input type="text" th:field="*{city}" required="required"/>
+                </div>
+
+                <div class="labelcontainer">
+                    <span class="inlinelabel">Zip Code: </span>
+                    <input type="text" th:field="*{zipcode}" required="required"/>
+                </div>
+
+                <div class="labelcontainer">
+                    <span class="inlinelabel">Acronym: </span>
+                    <input type="text" th:field="*{buildingAcronym}" required="required"/>
+                </div>
+
+                <div class="labelcontainer">
+                    <span class="inlinelabel">State: </span>
+                    <select th:field="*{state}">
+                        <option th:each="states : ${service.getStates()}"
+                                th:value="${states.getStateAcronym()}"
+                                th:text="${states.getStateName()}">Wireframe</option>
+                    </select>
+                </div>
+
+                <div style="padding: 20px 5px 5px 5px;"> <input type="reset" value="Reset" /> <input type="submit" value="Submit" /> </div>
+            </form>
+        </div>
+        <div class="container">
+            <div th:if="${message}">
+                <h4 id="message" th:style="${style}" th:text="${message}"/>
+                <script>
+                    $(document).ready(function(){
+                        $("#message").fadeOut(3000);
+                    });
+                </script>
+            </div>
+        </div>
+        <div class="container">
+            <hr />
+            <h3>Buildings</h3>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Building Name</th>
+                    <th>Entity Name</th>
+                    <th>Street Code</th>
+                    <th>Street Name</th>
+                    <th> City</th>
+                    <th>Zip Code</th>
+                    <th>Building Acronym</th>
+                    <th>State</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="building:${allBuildings}" th:object="${building}">
+                    <td th:text="*{getId()}"></td>
+                    <td th:text="*{getBuildingName()}"></td>
+                    <td th:text="*{getEntityName()}"></td>
+                    <td th:text="*{getStreetCode()}"></td>
+                    <td th:text="*{getStreetName()}"></td>
+                    <td th:text="*{getCity()}"></td>
+                    <td th:text="*{getZipcode()}"></td>
+                    <td th:text="*{getBuildingAcronym()}"></td>
+                    <td th:text="*{getState()}"></td>
+                    <td>
+                        <a name="remove"  th:href="@{/admin/deleteBuilding(id=*{getId()})}">Remove</a>
+                    </td>
+                    <td>
+                        <a name= "edit" href="#openModal" th:onclick="'javascript:requestBuildingEdit(' + ${building.getId()} + ', \''
+                         + ${building.getBuildingName()} + '\', \'' + ${building.getEntityID()}  + '\', \'' + ${building.getStreetCode()}
+                         + '\', \'' + ${building.getStreetName()} + '\', \'' + ${building.getCity()} + '\', \'' + ${building.getZipcode()}
+                         + '\', \'' + ${building.getBuildingAcronym()} + '\', \'' + ${building.getState()} +'\')'">edit</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="openModal" class="modalDialog">
+            <div>
+                <a href="#close" title="Close" class="close">X</a>
+                <h3>Edit a Building</h3>
+                <form action="#" th:action="@{/admin/editBuilding}" th:object="${building}" method="post" >
+                    <p><input type="hidden" th:field="*{id}" id="buildingIDField"/></p>
+
+                    <div class="labelcontainer">
+                        <span class="inlinelabel">Name: </span>
+                        <input type="text" th:field="*{buildingName}" id="buildingNameField"/>
+                    </div>
+
+                    <div class="labelcontainer">
+                        <span class="inlinelabel">Entity: </span>
+                        <select th:field="*{entityID}" id="entityNameField">
+                            <option th:each="entity : ${service.getEntities()}"
+                                    th:value="${entity.getID()}"
+                                    th:text="${entity.getEntityName()}">Wireframe</option>
+                        </select>
+                    </div>
+
+                    <div class="labelcontainer">
+                        <span class="inlinelabel">Street Code: </span>
+                        <input type="text" th:field="*{streetCode}" id="streetCodeField"/>
+                    </div>
+
+                    <div class="labelcontainer">
+                        <span class="inlinelabel">Street Name: </span>
+                        <input type="text" th:field="*{streetName}" id="streetNameField"/>
+                    </div>
+
+                    <div class="labelcontainer">
+                        <span class="inlinelabel">City: </span>
+                        <input type="text" th:field="*{city}" id="cityField"/>
+                    </div>
+
+                    <div class="labelcontainer">
+                        <span class="inlinelabel">Zip Code: </span>
+                        <input type="text" th:field="*{zipcode}" id="zipcodeField"/>
+                    </div>
+
+                    <div class="labelcontainer">
+                        <span class="inlinelabel">Acronym: </span>
+                        <input type="text" th:field="*{buildingAcronym}" id="buildingAcronymField"/>
+                    </div>
+
+                    <div class="labelcontainer">
+                        <span class="inlinelabel">State: </span>
+                        <select th:field="*{state}" id="stateField">
+                            <option th:each="states : ${service.getStates()}"
+                                    th:value="${states.getStateAcronym()}"
+                                    th:text="${states.getStateName()}">Wireframe</option>
+                        </select>
+                    </div>
+
+                    <div style="padding: 20px 5px 5px 5px;"> <input type="reset" value="Reset" /> <input type="submit" value="Submit" /> </div>
+                </form>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+            </div>
+        </div>
+    </body>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var requestBuildingEdit = function(ID, buildingName, entityID, streetCode, streetName, city, zipcode, buildingAcronym, state) {
+        document.getElementById('buildingIDField').value = ID;
+        document.getElementById('buildingNameField').value = buildingName;
+        document.getElementById('entityNameField').value = entityID;
+        document.getElementById('streetCodeField').value = streetCode;
+        document.getElementById('streetNameField').value = streetName;
+        document.getElementById('cityField').value = city;
+        document.getElementById('zipcodeField').value = zipcode;
+        document.getElementById('buildingAcronymField').value = buildingAcronym;
+        document.getElementById('stateField').value = state;
+    };
+    /*]]>*/
+</script>
+</html>

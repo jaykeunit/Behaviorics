@@ -1,0 +1,8 @@
+
+allprojects {
+    defaultTasks 'clean', 'test', 'cobertura'
+}
+
+subprojects {
+  
+}

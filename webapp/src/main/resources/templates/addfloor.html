@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang = "en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript" src="../static/scripts/navbar.js" th:src="@{/scripts/navbar.js}"></script>
+
+
+<head>
+    <title>Manage Floors</title>
+    <!--/*/ <th:block th:include="fragments/headerAll :: head"></th:block> /*/-->
+    <link rel="stylesheet" type="text/css" href="../static/css/addfloor.css" th:href="@{/css/addfloor.css}" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+</head>
+<body>
+
+    <!-- START OF HEADER -->
+    <div class="container">
+        <header class="page-header">
+            <h1>Behaviorics</h1>
+            <h2><small>Camera System Fault Detection Tool</small></h2>
+        </header>
+    </div>
+    <!-- END OF HEADER -->
+
+    <!-- START OF MENU -->
+    <nav id="navbar-main" class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a th:href="@{/reports}">Home</a></li>
+                    <li><a th:href="@{/failreports}">Camera Reports</a></li>
+                    <li><a th:href="@{/cameraInformation}">Camera Information</a></li>
+                    <li class="dropdown active">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Manage
+                            <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a th:href="@{/admin/addentity}">Entities</a></li>
+                            <li><a th:href="@{/admin/addbuilding}">Buildings</a></li>
+                            <li><a th:href="@{/admin/addfloor}">Floors</a></li>
+                            <li><a th:href="@{/admin/addcamera}">Cameras</a></li>
+                            <li><a th:href="@{/admin/addUser}">Users</a></li>
+                        </ul>
+                    </li>
+                    <li><a th:href="@{/manage}">Monitor Cameras</a></li>
+                </ul>
+                <form class="navbar-form navbar-right" th:action="@{/logout}" method="post">
+                    <button type="submit" class="btn btn-default">Sign Out</button>
+                </form>
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+    <!-- END OF MENU -->
+
+    <div class="container">
+
+        <h2>Manage Floors</h2>
+        <hr />
+        <h3>Add a Floor</h3>
+        <form action="#" th:action="@{/admin/addfloor}" th:object="${floor}" method="post" enctype="multipart/form-data">
+
+            <div class="labelcontainer">
+                <span class="inlinelabel">Floor Number: </span>
+                <input type="number" name="quantity" min="1" max="200" value="1" th:field="*{floorNumber}" required="required"/>
+            </div>
+
+            <div class="labelcontainer">
+                <span class="inlinelabel">Building: </span>
+                <select th:field="*{buildingID}">
+                    <option th:each="building : ${allBuildings}"
+                            th:value="${building.getId()}"
+                            th:text="${building.getBuildingName()}">Wireframe</option>
+                </select>
+            </div>
+
+            <div class="labelcontainer">
+                <span class="inlinelabel">Type: </span>
+                <select type="text" th:field="*{floorType}">
+                    <option th:value="F">Floor</option>
+                    <option th:value="B">Basement</option>
+                    <option th:value="R">Roof</option>
+                    <option th:value="EX">Exterior</option>
+                </select>
+            </div>
+
+            <p><input type="file" name="file" accept="application/pdf, image/jpeg, image/png"/></p>
+            <div style="padding: 20px 5px 5px 5px;"> <input type="reset" value="Reset" /> <input type="submit" value="Submit" /> </div>
+        </form>
+    </div>
+    <div class="container">
+        <div th:if="${message}">
+            <h4 id="message" th:style="${style}" th:text="${message}"/>
+            <script>
+                $(document).ready(function(){
+                    $("#message").fadeOut(3000);
+                });
+            </script>
+        </div>
+    </div>
+    <div class="container">
+        <hr />
+        <h3>Floors</h3>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Floor Type</th>
+                <th>Floor Number</th>
+                <th>Building Name</th>
+                <th>Nickname</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="floor:${allFloors}" th:object="${floor}">
+                <td th:text="*{getID()}"></td>
+                <td th:text="*{getFloorType()}"></td>
+                <td th:text="*{getFloorNumber()}"></td>
+                <td th:text="*{getBuildingName()}"></td>
+                <td th:text="*{getNickname()}"></td>
+                <td>
+                    <a name="remove"  th:href="@{/admin/deleteFloor(id=*{getID()})}">Remove</a>
+                </td>
+                <td>
+                    <a name= "edit" href="#openModal" th:onclick="'javascript:requestFloorEdit(' + ${floor.getID()}
+                    + ', ' + ${floor.getFloorNumber()} + ', \'' + ${floor.getBuildingID()}  + '\', \'' + ${floor.getFloorType()} + '\')'">edit</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="openModal" class="modalDialog">
+        <div>
+            <a href="#close" title="Close" class="close">X</a>
+            <h3>Edit a Floor</h3>
+            <form action="#" th:action="@{/admin/editFloor}" th:object="${floor}" method="post" enctype="multipart/form-data">
+                <p><input type="hidden" th:field="*{ID}" id="floorIDField"/></p>
+
+                <div class="labelcontainer">
+                    <span class="inlinelabel">Floor Number: </span>
+                    <input type="text" th:field="*{floorNumber}" id="floorNumberField"/>
+                </div>
+
+                <div class="labelcontainer">
+                    <span class="inlinelabel">Building: </span>
+                    <select th:field="*{buildingID}" id="buildingIDField">
+                        <option th:each="building : ${allBuildings}"
+                                th:value="${building.getId()}"
+                                th:text="${building.getBuildingName()}">Wireframe</option>
+                    </select>
+                </div>
+
+                <div class="labelcontainer">
+                    <span class="inlinelabel">Type: </span>
+                    <select type="text" th:field="*{floorType}" id="floorTypeField">
+                        <option th:value="F">Floor</option>
+                        <option th:value="B">Basement</option>
+                        <option th:value="R">Roof</option>
+                        <option th:value="EX">Exterior</option>
+                    </select>
+                </div>
+
+                <p><input type="file" name="file" accept="application/pdf, image/jpeg, image/png"/></p>
+                <div style="padding: 20px 5px 5px 5px;"> <input type="reset" value="Reset" /> <input type="submit" value="Submit" /> </div>
+            </form>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+        </div>
+    </div>
+</body>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var requestFloorEdit = function(id, floorNumber, buildingID, floorType) {
+        document.getElementById('floorIDField').value = id;
+        document.getElementById('floorNumberField').value = floorNumber;
+        document.getElementById('buildingIDField').value = buildingID;
+        document.getElementById('floorTypeField').value = floorType;
+    };
+    /*]]>*/
+</script>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript" src="../static/scripts/navbar.js" th:src="@{/scripts/navbar.js}"></script>
+
+
+<head>
+    <title>Manage Users</title>
+    <!--/*/ <th:block th:include="fragments/headerAll :: head"></th:block> /*/-->
+    <link rel="stylesheet" type="text/css" href="../static/css/addfloor.css" th:href="@{/css/addUser.css}" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+</head>
+<body>
+
+<!-- START OF HEADER -->
+<div class="container">
+    <header class="page-header">
+        <h1>Behaviorics</h1>
+        <h2><small>Camera System Fault Detection Tool</small></h2>
+    </header>
+</div>
+<!-- END OF HEADER -->
+
+<!-- START OF MENU -->
+<nav id="navbar-main" class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a th:href="@{/reports}">Home</a></li>
+                <li><a th:href="@{/failreports}">Camera Reports</a></li>
+                <li><a th:href="@{/cameraInformation}">Camera Information</a></li>
+                <li class="dropdown active">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Manage
+                        <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a th:href="@{/admin/addentity}">Entities</a></li>
+                        <li><a th:href="@{/admin/addbuilding}">Buildings</a></li>
+                        <li><a th:href="@{/admin/addfloor}">Floors</a></li>
+                        <li><a th:href="@{/admin/addcamera}">Cameras</a></li>
+                        <li><a th:href="@{/admin/addUser}">Users</a></li>
+                    </ul>
+                </li>
+                <li><a th:href="@{/manage}">Monitor Cameras</a></li>
+            </ul>
+            <form class="navbar-form navbar-right" th:action="@{/logout}" method="post">
+                <button type="submit" class="btn btn-default">Sign Out</button>
+            </form>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+<!-- END OF MENU -->
+
+<div class="container">
+
+    <h2>Manage Users</h2>
+    <hr />
+    <h3>Add a User</h3>
+    <form action="#" th:action="@{/admin/addUser}" th:object="${user}" method="post" >
+
+        <div class="labelcontainer">
+            <input type="hidden" th:field="*{organizationID}" required="required"/>
+        </div>
+
+        <div class="labelcontainer">
+            <span class="inlinelabel">User Name: </span>
+            <input type="text" th:field="*{userName}" required="required"/>
+        </div>
+
+        <div class="labelcontainer">
+            <span class="inlinelabel">Password: </span>
+            <input type="password" th:field="*{key}" required="required"/>
+        </div>
+
+        <div class="labelcontainer">
+            <span class="inlinelabel">Privilege: </span>
+            <select type="text" th:field="*{privilege}">
+                <option th:value="1">tech</option>
+                <option th:value="2">admin</option>
+            </select>
+        </div>
+
+        <div style="padding: 20px 5px 5px 5px;"> <input type="reset" value="Reset" /> <input type="submit" value="Submit" /> </div>
+    </form>
+</div>
+<div class="container">
+    <div th:if="${message}">
+        <h4 id="message" th:style="${style}" th:text="${message}"/>
+        <script>
+            $(document).ready(function(){
+                $("#message").fadeOut(3000);
+            });
+        </script>
+    </div>
+</div>
+<div class="container">
+    <hr />
+    <h3>Users</h3>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>User ID</th>
+            <th>User Name</th>
+            <th>Privilege</th>
+            <th>Organization Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user:${allUsers}" th:object="${user}">
+            <td th:text="*{getId()}"></td>
+            <td th:text="*{getUserName()}"></td>
+            <td th:text="*{getPrivilege()}"></td>
+            <td th:text="*{getOrganizationName()}"></td>
+            <td>
+                <a name="remove"  th:href="@{/admin/deleteUser(id=*{getId()})}">Remove</a>
+            </td>
+            <td>
+                <a name= "edit" href="#openModal" th:onclick="'javascript:requestUserEdit(' + ${user.getId()} +
+                ', ' + ${user.getOrganizationID()} + ', \'' + ${user.getUserName()} + '\', \'' + ${user.getPrivilege()} + '\')'">edit</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div id="openModal" class="modalDialog">
+    <div>
+        <a href="#close" title="Close" class="close">X</a>
+        <h3>Edit a User</h3>
+        <form action="#" th:action="@{/admin/editUser}" th:object="${user}" method="post" >
+            <p><input type="hidden" th:field="*{id}" id="userIDField"/></p>
+            <p><input type="hidden" th:field="*{organizationID}" id="organizationIDField"/></p>
+
+            <div class="labelcontainer">
+                <span class="inlinelabel">User Name: </span>
+                <input type="text" th:field="*{userName}" id="userNameField"/>
+            </div>
+
+            <div class="labelcontainer">
+                <span class="inlinelabel">Privilege: </span>
+                <select type="text" th:field="*{privilege}" id="privilegeField">
+                    <option th:value="1">tech</option>
+                    <option th:value="2">admin</option>
+                </select>
+            </div>
+
+            <div style="padding: 20px 5px 5px 5px;"> <input type="reset" value="Reset" /> <input type="submit" value="Submit" /> </div>
+        </form>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+    </div>
+</div>
+</body>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var requestUserEdit = function(ID, organizationID, userName, privilege) {
+        document.getElementById('userIDField').value = ID;
+        document.getElementById('organizationIDField').value = organizationID;
+        document.getElementById('userNameField').value = userName;
+        if(privilege === 'tech')
+            document.getElementById('privilegeField').value = 1;
+        if(privilege === 'admin')
+            document.getElementById('privilegeField').value = 2;
+    };
+    /*]]>*/
+</script>
+</html>

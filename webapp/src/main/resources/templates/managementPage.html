@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang = "en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript" src="../static/scripts/navbar.js" th:src="@{/scripts/navbar.js}"></script>
+
+<head>
+    <title>Management</title>
+    <!--/*/ <th:block th:include="fragments/headerAll :: head"></th:block> /*/-->
+    <link rel="stylesheet" type="text/css" href="../static/css/managementPage.css" th:href="@{/css/managementPage.css}" />
+</head>
+
+<body style="display:inline-block" onload= "setImagePlaceholders()">
+<!-- START OF MENU -->
+<nav id="navbar-main" class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a th:href="@{/reports}">Home</a></li>
+                <li><a th:href="@{/failreports}">Camera Reports</a></li>
+                <li><a th:href="@{/cameraInformation}">Camera Information</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Manage
+                        <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a th:href="@{/admin/addentity}">Entities</a></li>
+                        <li><a th:href="@{/admin/addbuilding}">Buildings</a></li>
+                        <li><a th:href="@{/admin/addfloor}">Floors</a></li>
+                        <li><a th:href="@{/admin/addcamera}">Cameras</a></li>
+                        <li><a th:href="@{/admin/addUser}">Users</a></li>
+                    </ul>
+                </li>
+                <li class="active"><a th:href="@{/manage}">Monitor Cameras</a></li>
+            </ul>
+            <form class="navbar-form navbar-right" th:action="@{/logout}" method="post">
+                <button type="submit" class="btn btn-default">Sign Out</button>
+            </form>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+<!-- END OF MENU -->
+
+
+<div id="ActiveAlertsContainer">
+    <p><b><font color="red" size="6">ACTIVE ALERTS:</font></b></p>
+    <p></p>
+    <p th:each="alert : ${service.getActiveRepairs()}" >
+        <a th:id="'alert'+ ${alert.getCameraID()}"  th:href="'javascript:getFloorPlanWithCameraID(' + ${alert.getCameraID()} + ')'" th:text="${'Camera ' + alert.getCameraID() + ' - ' + alert.getFailReason() + ' -  ' + alert.getDateFailed() + '. Current Status: ' + alert.getRepairStatus()}"/>
+    </p>
+</div>
+<div id="CameraViewContainer">
+            <div id="InstallView">
+                <img class="cameraImages" id="InstallImage" style="max-width:100%;max-height:100%;" src=""/>
+                <p id="InstallDate"></p>
+            </div>
+            <div id="RecentFailureView" >
+                <img class="cameraImages" id="RecentFailureImage" style="max-width:100%;max-height:100%;" src=""/>
+                <p id="FailDate"></p>
+            </div>
+            <div id="LiveFeedView">
+                <img class="cameraImages" id="LiveFeedViewImage" style="max-width:100%;max-height:100%;" src=""/>
+                <p id="CameraName"></p>
+            </div>
+        <div id="CameraMenu">
+            <p id ="statusText" size="4">Select a camera</p>
+            <div id="updateOption">
+                <p>Update Status</p>
+                <select type="text" id="statusSelector">
+                    <option th:value="Working">Working</option>
+                    <option th:value="UnderRepair">Under Repair</option>
+                </select>
+                <button id="updateStatusButton" th:onclick="'javascript:updateStatus()'">Update</button>
+            </div>
+        </div>
+</div>
+
+<div id="FloorMenuContainer">
+    <div class="panel-group" th:each="entity : ${service.getUniqueEntityName(originalList)}" th:object="${entity}" >
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="entity-title">
+                    <a data-toggle="collapse" href="#collapse1" th:href="'#' + ${entityStat.index} + 'entity'" th:text="${entity}">Entity name</a>
+                </h4>
+            </div>
+
+            <div  th:id="${entityStat.index} + 'entity'" class="panel-collapse collapse" >
+                <div class="panel-group" th:each="building : ${service.getUniqueBuildingName(service.getBuildingsByEntityName(entity, originalList))}" th:object="${building}">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h5 class="building-title">
+                                <a data-toggle="collapse" href="#collapse1" th:href="'#' + ${buildingStat.index} + 'building' + ${entityStat.index}" th:text="${building}">Building Name</a>
+                            </h5>
+                        </div>
+
+                        <div  th:id="${buildingStat.index} + 'building' + ${entityStat.index}" class="panel-collapse collapse" >
+                            <ul class="floor-title">
+                                <th:block th:each="floor : ${service.getFloorsByBuildingName(building, originalList)}" th:object="${floor}">
+                                    <li class="list-group-item" th:text="@{*{getFloorNumber()}}" th:onclick="'javascript:requestFloorplan(' + ${floor.getFloorID()} + ')'">Floor number</li>
+                                </th:block>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div id="FloorplanViewContainer">
+    <img th:src="@{./images/instructionsForManagementPage.png}" style="max-width:100%;max-height:100%;"/>
+</div>
+
+</body>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    var currentImageURL;
+    var refresh;
+    var currentSelection;
+    var updateButton = $('#updateStatusButton');
+
+    var setImagePlaceholders = function(){
+        document.getElementById("InstallImage").src = "./images/installationImage.png";
+        document.getElementById("RecentFailureImage").src = "./images/recentFailureImage.png";
+        document.getElementById("LiveFeedViewImage").src = "./images/currentImage.png";
+    }
+
+    var updateStatus = function(){
+        var newStatus = $('#statusSelector').val();
+        turnUpdateButtonOff();
+        if(newStatus !== currentSelection.cameraStatus){
+            $.get("/updateStatus/" + currentSelection.cameraID + "/" + newStatus, function(data){
+                turnUpdateButtonOn();
+                document.getElementById("statusText").innerText = "Current Status: " + newStatus;
+                updateAlertMsg(currentSelection.cameraID, newStatus, currentSelection.cameraStatus)
+                showOrHideUpdateOptions(newStatus);
+                changeIconColor(newStatus, currentSelection.cameraName)
+
+            });
+        }
+    }
+
+    var updateAlertMsg = function(cameraID, newStatus, oldStatus){
+        var alertMsg = $("#alert"+ cameraID);
+        var textMsg = alertMsg.text();
+        if(newStatus === "Working"){
+            alertMsg.remove();
+        }
+    }
+
+    var turnUpdateButtonOff = function() {
+        updateButton.html("Updating..");
+        updateButton.attr("disabled","disabled");
+    }
+    var turnUpdateButtonOn = function() {
+        updateButton.html("Update");
+        updateButton.removeAttr("disabled");
+    }
+
+    var requestFloorplan = function(floorID) {
+        document.getElementById("FloorplanViewContainer").innerHTML="<img class='overlays' id='floorImage'src='/floorPlan/" + floorID + "/'>";
+        getCameras(floorID);
+    }
+
+    var getCameras = function(floorID) {
+        $.get("/cameras/" + floorID + "", function(data){overlayImages(data);});
+    }
+
+    var overlayImages = function(cameras) {
+
+        var image = document.getElementById('floorImage');
+        var container = document.getElementById('FloorplanViewContainer');
+        var iconLeft = 16;
+        var iconUp = 50;
+
+        for (camera in cameras) {
+            var xCoordinate = cameras[camera].locationX;
+            var yCoordinate = cameras[camera].locationY;
+
+            var newImage = document.createElement("img");
+            if( cameras[camera].cameraStatus === "Working"){
+                newImage.setAttribute('src', "./images/cameraIcon.png");
+            }
+            else if (cameras[camera].cameraStatus === "Down") {
+                newImage.setAttribute('src', "./images/cameraIconDown.png");
+            }
+            else{
+                newImage.setAttribute('src', "./images/cameraIconUnderRepair.png");
+            }
+
+            newImage.setAttribute('class', 'overlays');
+            newImage.setAttribute('onclick', "getImages('"+ cameras[camera].cameraName + "','" + cameras[camera].dateInstalled + "', '" + cameras[camera].id +"','" + cameras[camera].cameraStatus + "')")
+            newImage.setAttribute('id', cameras[camera].cameraName);
+            newImage.style.left = xCoordinate - iconLeft + "px";
+            newImage.style.top = yCoordinate  - iconUp + "px";
+            document.getElementById("FloorplanViewContainer").appendChild(newImage);
+        }
+    }
+
+    function workingImageError(){
+        document.getElementById("InstallImage").src = "./images/FailImage.jpg";
+    }
+
+    function showOrHideUpdateOptions(status){
+        if(status !== "Working"){
+            $('#updateOption').css('display','inline-block');
+        }
+        else{
+            $('#updateOption').css('display','none');
+        }
+    }
+
+    function changeIconColor(status, iconName){
+        var newImage = document.getElementById(iconName);
+        if(status === "Working"){
+            newImage.setAttribute('src', "./images/cameraIcon.png");
+        }
+        else if(status === "UnderRepair"){
+            newImage.setAttribute('src', "./images/cameraIconUnderRepair.png");
+        }
+        else if(status === "Down"){
+            newImage.setAttribute('src', "./images/cameraIconDown.png");
+        }
+    }
+
+    function getImages(name, date, id, status){
+        $('#CameraMenu').css('display','inline-block');
+        currentSelection ={"cameraID":id, "cameraStatus": status, "cameraName": name};
+        document.getElementById("InstallDate").innerText = "Install Date: " + date;
+        document.getElementById("CameraName").innerText = "Camera Name: " +  name;
+        document.getElementById("InstallImage").src = "./images/LoadingImage.jpg";
+        document.getElementById("RecentFailureImage").src = "./images/LoadingImage.jpg";
+        document.getElementById("statusText").innerText = "Current Status: " + status;
+        $('#statusSelector').val(status);
+        showOrHideUpdateOptions(status)
+        $.get("/mostRecentFailDate/" + id + "", function(data){
+            if(data.dateFailed === null) {
+                document.getElementById("FailDate").innerText = "Recent Fail Date: No failures";
+                document.getElementById("RecentFailureImage").src = "./images/noFailImage.jpg";
+            }
+            else{
+                document.getElementById("FailDate").innerText = "Recent Fail Date: " + data.dateFailed;
+                document.getElementById("RecentFailureImage").src = "/failImage/" + data.id;
+            }
+        });
+
+        getWorkingStateImage(name);
+        getSnapshot(name)
+    }
+
+    function getWorkingStateImage(name){
+        document.getElementById("InstallImage").src = "/workingStateImage/" + name;
+        document.getElementById("InstallImage").addEventListener("error", workingImageError);
+    }
+
+    function getSnapshot(name) {
+        document.getElementById("LiveFeedView").style.visibility = "visible";
+        document.getElementById("LiveFeedViewImage").src = "./images/LoadingImage.jpg";
+        $.ajax({
+            url: "/getSnapshot/" + name + "",
+            error: function(jqXHR, textStatus, errorThrown){
+                if(errorThrown === "Bad Request"){
+                    document.getElementById("LiveFeedViewImage").src = "./images/FailImage.jpg";
+                    currentImageURL = "failed";
+                }
+                else
+                    getDefaultSnapshot(name);
+            },
+            success: function(data,textStatus,jqXHR){
+                if (data === "")
+                     getDefaultSnapshot(name);
+                else
+                    showSnapshot(data);
+            },
+            timeout: 10000
+        });
+    }
+
+    function getDefaultSnapshot(name) {
+        $.ajax({
+            url: "/getDefaultSnapshot/" + name + "",
+            error: function(){
+                document.getElementById("LiveFeedViewImage").src = "./images/FailImage.jpg";
+                currentImageURL = "failed";
+            },
+            success: function(data,textStatus,jqXHR){
+                if (data === "cannot get snapshot url") {
+                    document.getElementById("LiveFeedViewImage").src = "./images/FailImage.jpg";
+                    currentImageURL = "failed";
+                }
+                else{
+                    currentImageURL = data;
+                    showSnapshot(data);
+                }
+            },
+            timeout: 10000
+        });
+    }
+
+    function showSnapshot(url) {
+        if(url === currentImageURL) {
+            document.getElementById("LiveFeedViewImage").src = url + "?" + new Date().getTime();
+            document.getElementById("LiveFeedViewImage").onError = "./images/FailImage.jpg";
+            var refresh = window.setTimeout(showSnapshot, 10000, url);
+        }
+    }
+
+    function getFloorPlanWithCameraID(cameraID){
+        $.get("/getFloorIDfromCameraID/" + cameraID, function(data){requestFloorplan(data)});
+    }
+
+    /*]]>*/
+</script>
+</html>
